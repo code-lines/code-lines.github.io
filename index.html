@@ -356,6 +356,7 @@ c
                 <a href="#">En savoire plus</a>
               </div>
             </div>
+<<<<<<< HEAD
           </div>
           <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 Services-tab item">
             <div class="folded-corner service_tab_1">
@@ -470,4 +471,380 @@ c
   </script>
 </body>
 
+=======
+
+        </header>
+
+
+				<!-- Banner/Slider -->
+			       <header class="">
+			         <div class="canvtitle">
+			             <h1>Nous Développons pour vous !</h1>
+			             <h3>Vos application, vos sites web et vos logiciels</h3>
+			             <button type="button" class="btn btn-outline btn-text-red" name="button">Nos Services</button>
+			         </div>
+			         <canvas></canvas>
+			         <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+			         <script src="js/lines.js')}}"></script>
+			         <script>
+			             //CANVAS
+			             $(function(){
+			               var canvas = document.querySelector('canvas'),
+			                   ctx = canvas.getContext('2d')
+			               canvas.width = window.innerWidth;
+			               canvas.height = window.innerHeight;
+			               ctx.lineWidth = .3;
+			               ctx.strokeStyle = (new Color(150)).style;
+
+			               var mousePosition = {
+			                 x: 30 * canvas.width / 100,
+			                 y: 30 * canvas.height / 100
+			               };
+
+			               var dots = {
+			                 nb: 250,
+			                 distance: 100,
+			                 d_radius: 150,
+			                 array: []
+			               };
+
+			               function colorValue(min) {
+			                 return Math.floor(Math.random() * 255 + min);
+			               }
+
+			               function createColorStyle(r,g,b) {
+			                 return 'rgba(' + r + ',' + g + ',' + b + ', 0.8)';
+			               }
+
+			               function mixComponents(comp1, weight1, comp2, weight2) {
+			                 return (comp1 * weight1 + comp2 * weight2) / (weight1 + weight2);
+			               }
+
+			               function averageColorStyles(dot1, dot2) {
+			                 var color1 = dot1.color,
+			                     color2 = dot2.color;
+
+			                 var r = mixComponents(color1.r, dot1.radius, color2.r, dot2.radius),
+			                     g = mixComponents(color1.g, dot1.radius, color2.g, dot2.radius),
+			                     b = mixComponents(color1.b, dot1.radius, color2.b, dot2.radius);
+			                 return createColorStyle(Math.floor(r), Math.floor(g), Math.floor(b));
+			               }
+
+			               function Color(min) {
+			                 min = min || 0;
+			                 this.r = colorValue(min);
+			                 this.g = colorValue(min);
+			                 this.b = colorValue(min);
+			                 this.style = createColorStyle(this.r, this.g, this.b);
+			               }
+
+			               function Dot(){
+			                 this.x = Math.random() * canvas.width;
+			                 this.y = Math.random() * canvas.height;
+
+			                 this.vx = -.5 + Math.random();
+			                 this.vy = -.5 + Math.random();
+
+			                 this.radius = Math.random() * 2;
+
+			                 this.color = new Color();
+			                 console.log(this);
+			               }
+
+			               Dot.prototype = {
+			                 draw: function(){
+			                   ctx.beginPath();
+			                   ctx.fillStyle = this.color.style;
+			                   ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+			                   ctx.fill();
+			                 }
+			               };
+
+			               function createDots(){
+			                 for(i = 0; i < dots.nb; i++){
+			                   dots.array.push(new Dot());
+			                 }
+			               }
+
+			               function moveDots() {
+			                 for(i = 0; i < dots.nb; i++){
+
+			                   var dot = dots.array[i];
+
+			                   if(dot.y < 0 || dot.y > canvas.height){
+			                     dot.vx = dot.vx;
+			                     dot.vy = - dot.vy;
+			                   }
+			                   else if(dot.x < 0 || dot.x > canvas.width){
+			                     dot.vx = - dot.vx;
+			                     dot.vy = dot.vy;
+			                   }
+			                   dot.x += dot.vx;
+			                   dot.y += dot.vy;
+			                 }
+			               }
+
+			               function connectDots() {
+			                 for(i = 0; i < dots.nb; i++){
+			                   for(j = 0; j < dots.nb; j++){
+			                     i_dot = dots.array[i];
+			                     j_dot = dots.array[j];
+
+			                     if((i_dot.x - j_dot.x) < dots.distance && (i_dot.y - j_dot.y) < dots.distance && (i_dot.x - j_dot.x) > - dots.distance && (i_dot.y - j_dot.y) > - dots.distance){
+			                       if((i_dot.x - mousePosition.x) < dots.d_radius && (i_dot.y - mousePosition.y) < dots.d_radius && (i_dot.x - mousePosition.x) > - dots.d_radius && (i_dot.y - mousePosition.y) > - dots.d_radius){
+			                         ctx.beginPath();
+			                         ctx.strokeStyle = averageColorStyles(i_dot, j_dot);
+			                         ctx.moveTo(i_dot.x, i_dot.y);
+			                         ctx.lineTo(j_dot.x, j_dot.y);
+			                         ctx.stroke();
+			                         ctx.closePath();
+			                       }
+			                     }
+			                   }
+			                 }
+			               }
+
+			               function drawDots() {
+			                 for(i = 0; i < dots.nb; i++){
+			                   var dot = dots.array[i];
+			                   dot.draw();
+			                 }
+			               }
+
+			               function animateDots() {
+			                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+			                 moveDots();
+			                 connectDots();
+			                 drawDots();
+
+			                 requestAnimationFrame(animateDots);
+			               }
+
+			               $('canvas').on('mousemove', function(e){
+			                 mousePosition.x = e.pageX;
+			                 mousePosition.y = e.pageY;
+			               });
+
+			               $('canvas').on('mouseleave', function(e){
+			                 mousePosition.x = canvas.width / 2;
+			                 mousePosition.y = canvas.height / 2;
+			               });
+
+			               createDots();
+			               requestAnimationFrame(animateDots);
+			             });
+
+			         </script>
+			       </header>
+			   <!-- End Banner/Slider -->
+
+
+
+			        	<!--Section -->
+			        	<div class="section section-pad " id="">
+			        		<div class="container">
+			       			<div class="row text-center">
+			               <div class="col-md-6">
+			             		<div class="brain-container" >
+
+
+			                 </div>
+			                 <script type="text/javascript">
+			                        new Vivus('svg', {type: 'oneByOne', duration: 100});
+			                 </script>
+			               </div>
+			               <div class="col-md-6 ">
+			                 <h2>Eiusmod tempor incididunt ut labore et dolore magna aliqua</h2>
+			                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui.</p>
+			               </div>
+			       			</div>
+			    				</div>
+			    			</div>
+			        	<!--End Section -->
+
+
+
+			        	<!--End Section -->
+
+			                 <!-- Why choose Us  -->
+
+			                 <div class="section  section-pad bg-grey">
+			                   <div class="container">
+			                     <div class="section-head">
+			                       <div class="row text-center">
+			                         <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+			                           <h2 class="heading-section">Why choose Us</h2>
+			                           <p>Sed ut perspi ciatis unde omnis iste natus error sit volup tatem accusa ntium dolor emque lauda ntium, totam rem aperiam</p>
+			                         </div>
+			                       </div>
+			                     </div>
+			                     <div class="gaps size-3x"></div>
+			                     <div class="nav">
+			                    <div class="boxo home">
+			                   	<a href="#home"> <p class="txt">Because</p> <span><img src="/images/cl-logo1.png"  /></span></a>
+			                        </div>
+			                        <div class="boxo about">
+			                   	<a href="#about"> <p class="txt">Because</p>
+			                   	<span><img src="/images/cl-logo1.png"/></span></a>
+			                         </div>
+			                         <div class="boxo portfolio">
+			                   	<a href="#portfolio"> <p class="txt">Because</p>
+			                   	<span><img src="/images/cl-logo1.png"  /></span></a>
+			                         </div>
+			                        <div class="boxo services">
+			                   	<a href="#services"> <p class="txt">Because</p>
+			                   	<span><img src="/images/cl-logo1.png"  /></span></a>
+			                        </div>
+			                        <div class="boxo contact">
+			                   	<a href="#contact"> <p class="txt">Because</p>
+			                   	<span><img src="/images/cl-logo1.png"  /></span></a>
+			                        </div>
+			                   </div>
+			                   </div>
+			                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+			                  	<!--Section -->
+			                  	<div class="section  section-pad">
+
+			                     <div class="container">
+			                     	<div class="row">
+			                         <h2 class="text-center">Nos services</h2>
+			                     	<ul>
+			                     		<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 Services-tab  item">
+			                     			<div class="folded-corner service_tab_1">
+			                     				<div class="text">
+			                     					<i class="fa fa-image fa-5x fa-icon-image"></i>
+			                     						<p class="item-title">
+			                     								<h3> LOGICIEL </h3>
+			                     							</p><!-- /.item-title -->
+			                     					<p>
+			                     						Vous cherchez un logiciel de gestion apte à gérer vos problématiques et vous n’arrivez pas à vous décider ? Pas de souci, Euro Tech Conseil vous présente la solution la plus efficace et la plus rentable : « le développement du logiciel sur mesure ».
+			                     					</p>
+			                               <a href="#">En savoire plus</a>
+			                     				</div>
+			                     			</div>
+			                     	    </div>
+			                     		<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 Services-tab item">
+			                     			<div class="folded-corner service_tab_1">
+			                     				<div class="text">
+			                     					<i class="fa fa-lightbulb-o fa-5x fa-icon-image" ></i>
+			                     						<p class="item-title">
+			                     							<h3> Application web </h3>
+			                     						</p><!-- /.item-title -->
+			 <p>Il est primordial et important d’avoir un site web pour chaque entreprise, car ceci vous permet de toucher un large public et accroître votre clientèle.  </p>
+			 <a href="#">En savoire plus</a>
+			                     				</div>
+			                     			</div>
+			                     		</div>
+			                     		<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 Services-tab item">
+			                     			<div class="folded-corner service_tab_1">
+			                     				<div class="text">
+			                     					<i class="fa fa-brain fa-5x fa-icon-image"></i>
+			                     						<p class="item-title">
+			                     							<h3> Branding</h3>
+			                     						</p><!-- /.item-title -->
+			                     					<p>
+			 Que ce soit pour votre société, un produit ou un service, nous créons l'identité visuelle originale de votre marque au travers de la création de son logo, sa charte graphique et le web design de votre site internet.                    					</p>
+			 <a href="#">En savoire plus</a>
+			                     				</div>
+			                     			</div>
+			                     		</div>
+			                     		<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 Services-tab item">
+			                     			<div class="folded-corner service_tab_1">
+			                     				<div class="text">
+			                     					<i class="fas fa-user fa-5x fa-icon-image"></i>
+			                     						<p class="item-title">
+			                     							<h3> DESIGN</h3>
+			                     						</p><!-- /.item-title -->
+			                     					<p>
+			                                 Identité visuelle, Graphisme, Logo, Vidéo, Motion and horizontally in order to fit properly in your project. In order to see the slides,
+			                                 Identité visuelle, Graphisme, Logo, Vidéo, Motion .
+			                     					</p>
+			                               <a href="#">En savoire plus</a>
+			                     				</div>
+			                     			</div>
+			                     		</div>
+
+			                     	   </ul>
+			                     	</div>
+
+			                     <script type="text/javascript">
+			                     /* Demo purposes only */
+			                     $("figure").mouseleave(
+			                       function() {
+			                         $(this).removeClass("hover");
+			                       }
+			                     );
+			                     </script>
+			                 </div>
+			               </div>
+			                  	<!--End Section -->
+
+
+			                   <!-- New Box -->
+
+
+
+
+			        	<!-- Section -->
+			 		<div class="section section-pad-md bg-grey">
+			 			<div class="container">
+              <div class="text-center">
+                <h2>Nos Clients Satisfait</h2>
+              </div>
+			 				<div class="content row">
+			 					<div class="owl-carousel has-carousel no-dots"  data-items="6" data-loop="true" data-dots="false" data-auto="false">
+			 						<div class="logo-item"><img alt="" width="190" height="82" src="/images/cl-logo1.png"></div>
+			 						<div class="logo-item"><img alt="" width="190" height="82" src="/images/cl-logo2.png"></div>
+			 						<div class="logo-item"><img alt="" width="190" height="82" src="/images/cl-logo3.png"></div>
+			 						<div class="logo-item"><img alt="" width="190" height="82" src="/images/cl-logo4.png"></div>
+			 						<div class="logo-item"><img alt="" width="190" height="82" src="/images/cl-logo5.png"></div>
+			 						<div class="logo-item"><img alt="" width="190" height="82" src="/images/cl-logo6.png"></div>
+			 					</div>
+
+			 				</div>
+			 			</div>
+			 		</div>
+			 		<!-- End Section -->
+
+
+
+
+          			        	<div class="section ">
+          			        		<div class="city-bg">
+
+          			             <div class="car left-to-right">
+          			               <img src="/images/gif/{{ random([ 'c2.png', 'c3.png', 'c1.png']) }}" alt="" width="90px">
+          			             </div>
+          			            </div>
+          			        	</div>
+
+
+
+        <!-- Javascripts -->
+        <script src="/js/jquery.bundle.js"></script>
+        <script src="/js/script.js"></script>
+    		<script>
+    		  (function(b,i,t,C,O,I,N) {
+    			window.addEventListener('load',function() {
+    			  if(b.getElementById(C))return;
+    			  I=b.createElement(i),N=b.getElementsByTagName(i)[0];
+    			  I.src=t;I.id=C;N.parentNode.insertBefore(I, N);
+    			},false)
+    		  })(document,'script','https://widgets.bitcoin.com/widget.js','btcwdgt');
+    		</script>
+    </body>
+>>>>>>> c85e4391b994c2e98ffe19714c7235f8c24b629f
 </html>
