@@ -1,0 +1,41 @@
+.divved {
+  position: relative;
+  background-color: black;
+  width: 100%;
+  overflow: hidden;
+}
+
+.divved video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -moz-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.divved .container {
+  position: relative;
+  z-index: 2;
+}
+.canvtitle1{
+  padding: 10em 0;
+  text-align: center;
+    width: 100%;
+    position: relative;
+}
+
+@media (pointer: coarse) and (hover: none) {
+  .divved {
+    background: url('http://sandbox.thewikies.com/vfe-generator/images/big-buck-bunny_poster.jpg') black no-repeat center center scroll;
+  }
+  .divved video {
+    display: none;
+  }
+}
